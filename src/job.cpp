@@ -24,12 +24,12 @@ int Cmax(const std::vector<Job> &jobs, const std::vector<int> &sequence)
     std::vector<Job> reordered_jobs = sequence.empty() ? jobs : reorderJobs(jobs, sequence);
     std::vector<int> machine_times(jobs[0].getTasks().size() + 1);
 
-    for (int i = 0; i < reordered_jobs.size(); ++i)
+    for (auto job : reordered_jobs)
     {
-        std::vector<Task> tasks = reordered_jobs[i].getTasks();
+        std::vector<Task> tasks = job.getTasks();
         for (int j = 1; j < machine_times.size(); ++j)
         {
-            machine_times[j] = std::max(machine_times[j - 1], machine_times[j]) + tasks[j - 1].getDuration();
+            machine_times[j] = tasks[j - 1].getDuration() + std::max(machine_times[j - 1], machine_times[j]);
         }
     }
 

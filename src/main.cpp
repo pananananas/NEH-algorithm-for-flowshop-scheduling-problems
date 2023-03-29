@@ -21,6 +21,7 @@ int main(int argc, char const *argv[])
             {2, 4, 1}};
         std::vector<Job> jobs;
         std::vector<int> sequence = {0, 2, 1, 3};
+        // std::vector<int> sequence = {0, 1 ,2, 3};
 
         for (int i = 0; i < jobs_data.size(); i++)
         {

@@ -30,6 +30,5 @@ public:
     std::vector<Task> getTasks() const { return _tasks; }
 };
 
-int Cmax(const std::vector<Job> &jobs, const std::vector<int> &sequence);
+int Cmax(const std::vector<Job> &jobs, const std::vector<int> &sequence = {});
 std::vector<Job> getJobsFromFile(std::string filename, int dataset_number);
-void printJobs(const std::vector<Job> &jobs);

@@ -6,37 +6,45 @@
 #include <algorithm>
 #include "../inc/job.hh"
 #include "../inc/helpers.hh"
-#include "../inc/job_algorithms.hh"
 
 int main(int argc, char const *argv[])
 {
+    const std::string filename = "./../data/neh.data.txt";
     try
     {
-        std::string filename = "./../data/neh.data.txt";
+        bool end_program = false;
 
-        std::vector<std::vector<int>> jobs_data = {
-            {1, 1, 3},
-            {4, 1, 2},
-            {3, 4, 3},
-            {2, 4, 1}};
-        std::vector<Job> jobs;
-        std::vector<int> sequence = {0, 2, 1, 3};
-        // std::vector<int> sequence = {0, 1 ,2, 3};
-
-        for (int i = 0; i < jobs_data.size(); i++)
+        while (!end_program)
         {
-            jobs.push_back(Job(jobs_data[i]));
+            std::cout << "Enter the number of the dataset you want to use (1-10) or k to exit: ";
+            char dataset_number;
+            std::cin >> dataset_number;
+            if (dataset_number == 'k')
+            {
+                end_program = true;
+                continue;
+            }
+            int dataset_number_int = dataset_number - '0';
+
+            std::vector<Job> jobs = getJobsFromFile(filename, dataset_number_int);
+            
+            // std::vector<int> best_sequence = bruteForceBestSequence(jobs);
+            // std::cout << "Best sequence using brute force: ";
+            // for (int i = 0; i < best_sequence.size(); ++i)
+            // {
+            //     std::cout << best_sequence[i] << " ";
+            // }
+            // std::cout << "Cmax: " << Cmax(jobs, best_sequence) << std::endl;
+
+            // get best sequence using NEH algorithm
+            std::vector<int> neh_sequence = nehAlgorithmBestSequence(jobs);
+            std::cout << "Best sequence using NEH algorithm: ";
+            for (int i = 0; i < neh_sequence.size(); ++i)
+            {
+                std::cout << neh_sequence[i] << " ";
+            }
+            std::cout << "Cmax: " << Cmax(jobs, neh_sequence) << std::endl;
         }
-
-        std::cout << "Cmax:" << Cmax(jobs, sequence) << std::endl;
-
-        // for (int dataset_number = 10; dataset_number <= 20; dataset_number++)
-        // {
-        //     std::vector<Job> jobs = getJobsFromFile(filename, dataset_number);
-        //     std::cout << "Wynik dla zbioru " << dataset_number << std::endl;
-        //     std::cout << "Wynik nieposortowany: " << getWeightedDelaysSum(jobs) << " --- ";
-        //     std::cout << "Wynik optymalny: " << getPDAlgorithmWitiSum(jobs) << std::endl << std::endl;
-        // }
     }
     catch (std::exception &e)
     {

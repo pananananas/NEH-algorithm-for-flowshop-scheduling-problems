@@ -32,3 +32,7 @@ public:
 
 int Cmax(const std::vector<Job> &jobs, const std::vector<int> &sequence = {});
 std::vector<Job> getJobsFromFile(std::string filename, int dataset_number);
+std::vector<int> bruteForceBestSequence(const std::vector<Job> &jobs);
+std::vector<Job> reorderJobs(const std::vector<Job> &jobs, const std::vector<int> &sequence);
+std::vector<int> nehAlgorithmBestSequence(const std::vector<Job> &jobs);
+void printJobs(const std::vector<Job> &jobs);

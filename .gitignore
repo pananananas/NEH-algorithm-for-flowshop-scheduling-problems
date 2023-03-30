@@ -4,6 +4,7 @@ build/
 .vscode/
 .DS_Store
 data/
+/data
 
 
 ### C++ ###

@@ -6,6 +6,10 @@
 #include <algorithm>
 #include <map>
 #include <queue>
+#include <numeric>
+#include <cmath>
+#include <chrono>
+#include <ctime>
 #include "../inc/job.hh"
 #include "../inc/helpers.hh"
 
@@ -62,56 +66,32 @@ std::vector<int> bruteForceBestSequence(const std::vector<Job> &jobs)
 
 std::vector<int> nehAlgorithmBestSequence(const std::vector<Job> &jobs)
 {
-    std::vector<int> sequence;
-    std::vector<int> best_sequence;
-    int best_cmax = INT_MAX;
+    std::vector<Job> sorted_jobs = jobs;
+    std::sort(sorted_jobs.begin(), sorted_jobs.end(), [](Job a, Job b)
+              { return a.getSumOfTasksDurations() > b.getSumOfTasksDurations(); });
 
-    // sort jobs by sum of tasks durations
-    std::map<int, std::vector<Job>> jobs_by_sum;
-    for (auto job : jobs)
+    std::vector<int> sequence = {0};
+
+    for (int i = 1; i < jobs.size(); ++i)
     {
-        int sum = 0;
-        for (auto task : job.getTasks())
-        {
-            sum += task.getDuration();
-        }
-        jobs_by_sum[sum].push_back(job);
-    }
+        int best_cmax = std::numeric_limits<int>::max();
+        int best_position = 0;
 
-    // add first job to sequence
-    sequence.push_back(0);
-    best_sequence = sequence;
-    best_cmax = Cmax(jobs, sequence);
-
-    // add remaining jobs to sequence
-    for (auto it = jobs_by_sum.rbegin(); it != jobs_by_sum.rend(); ++it)
-    {
-        for (auto job : it->second)
+        for (int j = 0; j <= sequence.size(); ++j)
         {
-            int best_insertion_index = 0;
-            int best_insertion_cmax = INT_MAX;
-            for (int i = 0; i <= sequence.size(); ++i)
-            {
-                sequence.insert(sequence.begin() + i, job);
-                int cmax = Cmax(jobs, sequence);
-                if (cmax < best_insertion_cmax)
-                {
-                    best_insertion_cmax = cmax;
-                    best_insertion_index = i;
-                }
-                sequence.erase(sequence.begin() + i);
-            }
-            sequence.insert(sequence.begin() + best_insertion_index, job);
-            int cmax = Cmax(jobs, sequence);
+            std::vector<int> new_sequence = sequence;
+            new_sequence.insert(new_sequence.begin() + j, i);
+            int cmax = Cmax(jobs, new_sequence);
             if (cmax < best_cmax)
             {
                 best_cmax = cmax;
-                best_sequence = sequence;
+                best_position = j;
             }
         }
-    }
 
-    return best_sequence;
+        sequence.insert(sequence.begin() + best_position, i);
+    }
+    return sequence;
 }
 
 std::vector<Job> getJobsFromFile(std::string filename, int dataset_number)

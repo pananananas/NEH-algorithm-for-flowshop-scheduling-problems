@@ -28,6 +28,16 @@ public:
         }
     }
     std::vector<Task> getTasks() const { return _tasks; }
+
+    int getSumOfTasksDurations() const
+    {
+        int sum = 0;
+        for (auto task : _tasks)
+        {
+            sum += task.getDuration();
+        }
+        return sum;
+    }
 };
 
 int Cmax(const std::vector<Job> &jobs, const std::vector<int> &sequence = {});

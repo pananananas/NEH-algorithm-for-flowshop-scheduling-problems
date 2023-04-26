@@ -67,9 +67,7 @@ std::vector<int> bruteForceBestSequence(const std::vector<Job> &jobs)
 std::vector<int> nehAlgorithmBestSequence(const std::vector<Job> &jobs)
 {
     std::vector<Job> sorted_jobs = jobs;
-    std::sort(sorted_jobs.begin(), sorted_jobs.end(), [](Job a, Job b)
-              { return a.getSumOfTasksDurations() > b.getSumOfTasksDurations(); });
-
+    std::sort(sorted_jobs.begin(), sorted_jobs.end());
     std::vector<int> sequence = {0};
 
     for (int i = 1; i < jobs.size(); ++i)
@@ -92,6 +90,47 @@ std::vector<int> nehAlgorithmBestSequence(const std::vector<Job> &jobs)
         sequence.insert(sequence.begin() + best_position, i);
     }
     return sequence;
+}
+
+std::vector<int> QNEH_BestSequence(const std::vector<Job> &jobs)
+{
+    std::vector<Job> sorted_jobs = jobs;
+    std::sort(sorted_jobs.begin(), sorted_jobs.end());
+    int num_of_machines = sorted_jobs[0].getTasks().size();
+
+    std::vector<Job> sequence;
+    std::vector<std::vector<int>> in_path(sorted_jobs.size() + 1, std::vector<int>(num_of_machines + 1, 0));
+    std::vector<std::vector<int>> out_path(sorted_jobs.size() + 1, std::vector<int>(num_of_machines + 1, 0));
+
+    for (int k = 0; k < sorted_jobs.size(); k++)
+    {
+        Job next_job = sorted_jobs[k];
+
+        /***** cmax ******/
+        for (int i = 1; i < k; i++)
+        {
+            for (int j = 1; j < num_of_machines; j++)
+            {
+                in_path[i][j] = std::max(in_path[i][j - 1], in_path[i - 1][j]) + sorted_jobs[i].getTaskDuration(j);
+            }
+        }
+        for (int i = 1; i < k; i++)
+        {
+            for (int j = num_of_machines - 1; j >= 0; j--)
+            {
+                out_path[i][j] = std::max(in_path[i][j + 1], in_path[i + 1][j]) + sorted_jobs[i].getTaskDuration(j);
+            }
+        }
+        /***** cmax ******/
+
+        for (int p = 0; p < k; p++)
+        {
+
+            for (int m = 0; m < num_of_machines; m++)
+            {
+            }
+        }
+    }
 }
 
 std::vector<Job> getJobsFromFile(std::string filename, int dataset_number)
